@@ -81,7 +81,18 @@ function copyValidationKeywords(src) {
 }
 
 function handleNullable(schema) {
-  return { anyOf: [schema, { type: 'null' }] };
+  if (Array.isArray(schema.type)) {
+    schema.type = [...schema.type, 'null'];
+  } else if ('type' in schema) {
+    schema.type = [schema.type, 'null'];
+  }
+
+  if ('const' in schema) {
+    schema.enum = [schema.const, null];
+    delete schema.const;
+  } else if (Array.isArray(schema.enum)) {
+    schema.enum = [...schema.enum, null];
+  }
 }
 
 const SUBSCHEMA_KEYWORDS = [
@@ -138,8 +149,18 @@ function handleNullableSchema(schema) {
 
   if (schema.nullable) {
     delete newSchema.nullable;
-    return handleNullable(newSchema);
+    if (
+      'not' in schema ||
+      'allOf' in schema ||
+      'anyOf' in schema ||
+      'oneOf' in schema
+    ) {
+      return { anyOf: [newSchema, { type: 'null' }] };
+    } else {
+      handleNullable(newSchema);
+    }
   }
+
   return newSchema;
 }
 
@@ -171,9 +192,10 @@ function getSchema(parameters, type) {
         schema.properties[param.name] = paramSchema;
       } else {
         const paramSchema = copyValidationKeywords(param);
-        schema.properties[param.name] = param.nullable
-          ? handleNullable(paramSchema)
-          : paramSchema;
+        if (param.nullable) {
+          handleNullable(paramSchema);
+        }
+        schema.properties[param.name] = paramSchema;
       }
     });
 

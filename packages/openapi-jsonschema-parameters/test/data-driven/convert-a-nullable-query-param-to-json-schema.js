@@ -12,14 +12,7 @@ module.exports = {
     query: {
       properties: {
         foo: {
-          anyOf: [
-            {
-              type: 'string'
-            },
-            {
-              type: 'null'
-            }
-          ]
+          type: ['string', 'null']
         }
       },
       required: ['foo']

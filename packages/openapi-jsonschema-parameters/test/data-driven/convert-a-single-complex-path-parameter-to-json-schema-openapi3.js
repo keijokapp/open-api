@@ -27,7 +27,10 @@ module.exports = {
         enum: ['1', '3'],
         multipleOf: 57,
         properties: {
-          something: { nullable: true }
+          something: {
+            type: 'string',
+            nullable: true
+          }
         },
         oneOf: [{ nullable: true }],
         allOf: [{ nullable: true }],
@@ -56,7 +59,7 @@ module.exports = {
           minimum: 5,
           exclusiveMinimum: false,
           format: 'asdf',
-          items: [{ anyOf: [{}, { type: 'null' }] }],
+          items: [{}],
           maxLength: 5,
           minLength: 6,
           pattern: '^asdf$',
@@ -67,12 +70,12 @@ module.exports = {
           enum: ['1', '3'],
           multipleOf: 57,
           properties: {
-            something: { anyOf: [{}, { type: 'null' }] }
+            something: { type: ['string', 'null'] }
           },
-          oneOf: [{ anyOf: [{}, { type: 'null' }] }],
-          allOf: [{ anyOf: [{}, { type: 'null' }] }],
-          anyOf: [{ anyOf: [{}, { type: 'null' }] }],
-          not: { anyOf: [{}, { type: 'null' }] },
+          oneOf: [{}],
+          allOf: [{}],
+          anyOf: [{}],
+          not: {},
           examples: {
             example1: {
               value: 'asd'
